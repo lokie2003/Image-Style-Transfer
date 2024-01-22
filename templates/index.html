@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Transfer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Tahoma";
+            color: #fff;
+        }
+        body{
+            background:url('https://img.freepik.com/free-vector/gradient-minimalist-background_23-2149976737.jpg?size=626&ext=jpg&ga=GA1.1.304646152.1694899685&semt=ais');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10%;
+            text-align: center;
+            color: black;
+        }
+        .container {
+            margin-top: 100px;
+            margin-left: 37%;
+            max-width: 600px;
+            background: transparent;
+            padding: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            
+        }
+
+        .form-group {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            border: solid rgb(0, 0, 0);
+            background-color: #000;
+            color: #fff;
+            opacity: .5;
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #353535;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-top: 10%;
+            margin-bottom: 10%;
+            margin-left: 40%;
+            padding: 20px;
+        }
+
+        h2,p    {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #0c0c0c;
+        }
+
+        img {
+            max-width: 100%;
+            height: 100%;
+            margin-top: 10px;
+        }
+
+        #content-preview,
+        #style-preview {
+            max-width: 100%;
+            height: 100%;
+        }
+        #s{
+            margin-left: 27%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IMAGE TUTORA</h1>
+        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="content_image">Select Content Image</label>
+                <input type="file" id="content_image" name="content_image" accept=".png, .jpg, .jpeg" required>
+                <img id="content-preview" src="#" alt="Content Preview" style="display: none;">
+            </div>
+            
+            <div class="form-group">
+                <label for="style_image">Select Style Image</label>
+                <input type="file" id="style_image" name="style_image" accept=".png, .jpg, .jpeg" required>
+                <img id="style-preview" src="#" alt="Style Preview" style="display: none;">
+            </div>
+            
+            <input type="submit" value="APPLY">
+
+            {% if result %}
+            <h2>STYLED IMAGE</h2>
+            <p>Click the image to download
+            </p>            
+            <div id="s">
+                <a href="{{ url_for('uploaded_file', filename='output.png') }}" download>
+                    <img src="{{ url_for('uploaded_file', filename='output.png') }}" alt="Stylized Image">
+                </a>
+            </div>
+    
+        {% endif %}
+        </form>
+        
+    </div>
+
+    <script>
+        // Bootstrap custom file input
+        const contentImageInput = document.getElementById('content_image');
+        const styleImageInput = document.getElementById('style_image');
+        const contentImagePreview = document.getElementById('content-preview');
+        const styleImagePreview = document.getElementById('style-preview');
+
+        contentImageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    contentImagePreview.style.display = 'block';
+                    contentImagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        styleImageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    styleImagePreview.style.display = 'block';
+                    styleImagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+</html>
+
